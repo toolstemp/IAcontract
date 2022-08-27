@@ -1,0 +1,51 @@
+----------------------------------47448---------------------------------------
+0:	pragma solidity ^0.4.19;
+1:	
+2:	contract PrivateBank
+3:	{
+4:	    mapping (address => uint) balances;
+5:	    
+6:	    function GetBal() 
+7:	    public
+8:	    returns(uint) 
+9:	    {
+10:	        return balances[msg.sender];
+11:	    }
+12:	    
+13:	    uint public MinDeposit = 1 ether;
+14:	    
+15:	    Log TransferLog;
+16:	    
+17:	    function PrivateBank(address _lib)
+18:	    {
+19:	        TransferLog = Log(_lib);
+20:	    }
+21:	    
+22:	    function Deposit()
+23:	    public
+24:	    payable
+25:	    {
+26:	        if(msg.value >= MinDeposit)
+27:	        {
+28:	            balances[msg.sender]+=msg.value;
+29:	            TransferLog.AddMessage(msg.sender,msg.value,"Deposit");
+30:	        }
+31:	    }
+32:	    
+33:	    function CashOut(uint _am)
+34:	    {
+35:	        if(_am<=balances[msg.sender])
+36:	        {
+37:	            
+38:	            if(msg.sender.call.value(_am)())
+39:	            {
+40:	                balances[msg.sender]-=_am;
+41:	                TransferLog.AddMessage(msg.sender,_am,"CashOut");
+42:	            }
+43:	        }
+44:	    }
+45:	    
+46:	    function() public payable{}    
+47:	    
+48:	}
+49:	
